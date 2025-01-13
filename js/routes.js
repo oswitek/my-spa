@@ -29,6 +29,13 @@ function RenderAboutPage() {
         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>`; 
 } 
  
+function generateCaptcha() {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    captchaAnswer = (num1 + num2).toString();
+    document.getElementById('captcha-question').textContent = `What is ${num1} + ${num2}?`;
+}
+
 function RenderContactPage() {      
     document.querySelector('main').innerHTML = ` 
         <h1 class="title">Contact with me</h1> 
@@ -43,15 +50,25 @@ function RenderContactPage() {
             <textarea id="message" name="message" required></textarea> 
 
             <div class="captcha">
-                <label for="captcha">What is 5 + 3?</label>
+                <label id="captcha-question" for="captcha"></label>
                 <input type="text" id="captcha" name="captcha" required>
             </div>
 
             <button type="submit">Send</button> 
         </form>`; 
      
+    generateCaptcha();
     document.getElementById('contact-form').addEventListener('submit', validateForm);
-} 
+}
+
+let captchaAnswer;
+
+function generateCaptcha() {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    captchaAnswer = (num1 + num2).toString();
+    document.getElementById('captcha-question').textContent = `What is ${num1} + ${num2}?`;
+}
 
 function validateForm(event) {
     event.preventDefault();
@@ -70,14 +87,16 @@ function validateForm(event) {
         return;
     }
 
-    if (captcha !== "8") {
+    if (captcha !== captchaAnswer) {
         alert('CAPTCHA is incorrect. Please try again.');
+        generateCaptcha();
         return;
     }
 
     alert('Form submitted successfully!');
     document.getElementById('contact-form').reset();
-} 
+    generateCaptcha();
+}
  
 function popStateHandler() {  
     let loc = window.location.href.toString().split(window.location.host)[1];  
