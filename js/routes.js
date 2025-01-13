@@ -60,3 +60,76 @@ window.onpopstate = popStateHandler;
 document.getElementById('theme-toggle').addEventListener('click', () => { 
     document.body.classList.toggle('dark-mode'); 
 });
+
+document.querySelector('#gallery-link').addEventListener('click', () => {
+    let stateObj = { page: 'gallery' };
+    document.title = 'Gallery';
+    history.pushState(stateObj, "gallery", "?gallery");
+    RenderGalleryPage();
+});
+
+function RenderGalleryPage() {
+    document.querySelector('main').innerHTML = `
+        <h1 class="title">Gallery</h1>
+        <div class="gallery-grid"></div>
+        <div id="modal" class="hidden">
+            <div id="modal-content">
+                <span id="close-modal">&times;</span>
+                <img id="modal-image" src="" alt="Full-size image">
+            </div>
+        </div>`;
+    loadGalleryImages();
+}
+
+function loadGalleryImages() {
+    const imageUrls = Array.from({ length: 9 }, (_, i) => `images/image${i + 1}.jpg`);
+    const galleryGrid = document.querySelector('.gallery-grid');
+
+    imageUrls.forEach((url, index) => {
+        const img = document.createElement('img');
+        img.dataset.src = url;
+        img.alt = `Image ${index + 1}`;
+        img.className = 'gallery-thumbnail lazy';
+        galleryGrid.appendChild(img);
+    });
+
+    implementLazyLoading();
+    setupModal();
+}
+
+function implementLazyLoading() {
+    const lazyImages = document.querySelectorAll('.lazy');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    lazyImages.forEach(img => observer.observe(img));
+}
+
+function setupModal() {
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modal-image');
+    const closeModal = document.getElementById('close-modal');
+
+    document.querySelectorAll('.gallery-thumbnail').forEach(img => {
+        img.addEventListener('click', () => {
+            modalImage.src = img.src;
+            modal.classList.remove('hidden');
+        });
+    });
+
+    closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+}
