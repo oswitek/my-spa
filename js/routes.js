@@ -82,7 +82,7 @@ function RenderGalleryPage() {
 }
 
 function loadGalleryImages() {
-    const imageUrls = Array.from({ length: 9 }, (_, i) => `images/image${i + 1}.jpg`);
+    const imageUrls = Array.from({ length: 9 }, (_, i) => `./images/image${i + 1}.jpg`);
     const galleryGrid = document.querySelector('.gallery-grid');
 
     imageUrls.forEach((url, index) => {
