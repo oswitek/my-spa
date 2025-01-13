@@ -35,17 +35,48 @@ function RenderContactPage() {
         <form id="contact-form"> 
             <label for="name">Name:</label> 
             <input type="text" id="name" name="name" required> 
+
             <label for="email">Email:</label> 
             <input type="email" id="email" name="email" required> 
+
             <label for="message">Message:</label> 
             <textarea id="message" name="message" required></textarea> 
+
+            <div class="captcha">
+                <label for="captcha">What is 5 + 3?</label>
+                <input type="text" id="captcha" name="captcha" required>
+            </div>
+
             <button type="submit">Send</button> 
         </form>`; 
      
-    document.getElementById('contact-form').addEventListener('submit', (event) => { 
-        event.preventDefault(); 
-        alert('Form submitted!'); 
-}); 
+    document.getElementById('contact-form').addEventListener('submit', validateForm);
+} 
+
+function validateForm(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const captcha = document.getElementById('captcha').value.trim();
+
+    if (!name || !email || !message) {
+        alert('All fields are required!');
+        return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    if (captcha !== "8") {
+        alert('CAPTCHA is incorrect. Please try again.');
+        return;
+    }
+
+    alert('Form submitted successfully!');
+    document.getElementById('contact-form').reset();
 } 
  
 function popStateHandler() {  
